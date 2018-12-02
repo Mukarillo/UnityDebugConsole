@@ -13,17 +13,7 @@ namespace DebugConsoleTool
 
         private List<Assembly> mAssembliesToSearch = new List<Assembly>();
 
-        private List<MethodInfo> mStaticMethods = new List<MethodInfo>();
-        private List<MethodInfo> mNonStaticMethods = new List<MethodInfo>();
-        private List<MethodInfo> mAllMethods
-        {
-            get
-            {
-                var all = new List<MethodInfo>(mStaticMethods);
-                all.AddRange(mNonStaticMethods);
-                return all;
-            }
-        }
+        private List<MethodInfo> mMethods = new List<MethodInfo>();
         private MethodInfo mCurrentMethod;
         private bool mShowingConsole = false;
 
@@ -47,7 +37,7 @@ namespace DebugConsoleTool
             mAssembliesToSearch = AppDomain.CurrentDomain.GetAssemblies()
                                    .Where(x => x.ManifestModule.Name.Contains("Assembly-CSharp.dll")).ToList();
 
-            mStaticMethods = GetConsoleDebugMethods(true);
+            RefreshMethods();
         }
 
         public void Open()
@@ -58,7 +48,11 @@ namespace DebugConsoleTool
 
         public void RefreshMethods()
         {
-            mNonStaticMethods = GetConsoleDebugMethods(false);
+            mMethods = mAssembliesToSearch
+               .SelectMany(x => x.GetTypes())
+               .SelectMany(x => x.GetMethods()
+               .Where(z => z.GetCustomAttributes(typeof(DebugConsoleAttribute), true).Length > 0))
+               .ToList();
         }
 
         public void Close()
@@ -88,7 +82,7 @@ namespace DebugConsoleTool
             GUILayout.BeginVertical();
             bool needEnd = false;
             var i = 0;
-            foreach (var method in mAllMethods)
+            foreach (var method in mMethods)
             {
                 if (!method.IsStatic && typeof(MonoBehaviour).IsAssignableFrom(method.DeclaringType))
                     if (FindObjectOfType(method.DeclaringType) == null)
@@ -206,22 +200,9 @@ namespace DebugConsoleTool
             mUserParameters = new List<object>();
         }
 
-        private List<MethodInfo> GetConsoleDebugMethods(bool isStatic)
-        {
-            return mAssembliesToSearch
-               .SelectMany(x => x.GetTypes())
-               .SelectMany(x => x.GetMethods()
-               .Where(y => y.IsStatic == isStatic)
-               .Where(z => z.GetCustomAttributes(typeof(DebugConsoleAttribute), true).Length > 0))
-               .ToList();
-        }
-
         private object GetDefaultValue(Type t)
         {
-            if (t.IsValueType)
-                return Activator.CreateInstance(t);
-
-            return null;
+            return t.IsValueType ? Activator.CreateInstance(t) : null;
         }
     }
 }
