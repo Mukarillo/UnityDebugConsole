@@ -50,7 +50,7 @@ namespace DebugConsoleTool
         {
             mMethods = mAssembliesToSearch
                .SelectMany(x => x.GetTypes())
-               .SelectMany(x => x.GetMethods()
+                .SelectMany(x => x.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static)
                .Where(z => z.GetCustomAttributes(typeof(DebugConsoleAttribute), true).Length > 0))
                .ToList();
         }
