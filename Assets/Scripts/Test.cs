@@ -8,6 +8,18 @@ public class Test : MonoBehaviour
     public void Start()
     {
         gesture.OnGestureDone.AddListener(DebugConsole.Instance.Open);
+
+        DebugConsole.Instance.AddInstanceMethod("test", "print test", "This method will print method", this, () =>
+        {
+            Debug.Log("test");
+        });
+
+        DebugConsole.Instance.AddInstanceMethod("hue", "print hue", "This method will print hue", this, hue);
+    }
+
+    public void hue()
+    {
+        Debug.Log("hue");
     }
 
     [DebugConsole("no param", "desc")]
