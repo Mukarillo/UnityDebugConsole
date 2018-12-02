@@ -14,12 +14,12 @@ public class Test : MonoBehaviour
             Debug.Log("In-line method");
         });
 
-        DebugConsole.Instance.AddInstanceMethod("test2", "Declared Method", "", this, DeclaredMethod);
+        DebugConsole.Instance.AddInstanceMethod<string>("test2", "Declared Method", "", this, DeclaredMethod);
     }
 
-    public void DeclaredMethod()
+    public void DeclaredMethod(string test)
     {
-        Debug.Log("DeclaredMethod");
+        Debug.Log("DeclaredMethod: " + test);
     }
 
     [DebugConsole("no param", "desc")]

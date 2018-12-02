@@ -39,6 +39,8 @@ namespace DebugConsoleTool
     {
         public static DebugConsole Instance;
 
+        public GUISkin skin;
+
         private List<Assembly> mAssembliesToSearch = new List<Assembly>();
 
         private List<DebugMethod> mDebugMethods = new List<DebugMethod>();
@@ -95,10 +97,40 @@ namespace DebugConsoleTool
 
         public bool AddInstanceMethod(string id, string methodName, string methodDescription, object target, Action method)
         {
+            return InternAddInstanceMethod(id, methodName, methodDescription, target, method.Method);
+        }
+
+        public bool AddInstanceMethod<T>(string id, string methodName, string methodDescription, object target, Action<T> method)
+        {
+            return InternAddInstanceMethod(id, methodName, methodDescription, target, method.Method);
+        }
+
+        public bool AddInstanceMethod<T1, T2>(string id, string methodName, string methodDescription, object target, Action<T1, T2> method)
+        {
+            return InternAddInstanceMethod(id, methodName, methodDescription, target, method.Method);
+        }
+
+        public bool AddInstanceMethod<T1, T2, T3>(string id, string methodName, string methodDescription, object target, Action<T1, T2, T3> method)
+        {
+            return InternAddInstanceMethod(id, methodName, methodDescription, target, method.Method);
+        }
+
+        public bool AddInstanceMethod<T1, T2, T3, T4>(string id, string methodName, string methodDescription, object target, Action<T1, T2, T3, T4> method)
+        {
+            return InternAddInstanceMethod(id, methodName, methodDescription, target, method.Method);
+        }
+
+        public bool AddInstanceMethod<T1, T2, T3, T4, T5>(string id, string methodName, string methodDescription, object target, Action<T1, T2, T3, T4, T5> method)
+        {
+            return InternAddInstanceMethod(id, methodName, methodDescription, target, method.Method);
+        }
+
+        private bool InternAddInstanceMethod(string id, string methodName, string methodDescription, object target, MethodInfo method)
+        {
             if (mInstanceDebugMethods.Any(x => x.id.Equals(id)))
                 return false;
 
-            mInstanceDebugMethods.Add(new DebugMethod(id, methodName, methodDescription, target, method.Method));
+            mInstanceDebugMethods.Add(new DebugMethod(id, methodName, methodDescription, target, method));
             return true;
         }
 
@@ -145,7 +177,7 @@ namespace DebugConsoleTool
                     GUILayout.BeginHorizontal();
             
                 var methodTarget = debugMethod.target == null ? "null" : debugMethod.target.ToString();
-                if (GUILayout.Button(string.Format("{0} ({1})", debugMethod.MethodName, methodTarget), GUILayout.Height(Screen.height * 0.2f)))
+                if (GUILayout.Button(string.Format("{0} ({1})", debugMethod.MethodName, methodTarget), skin.button, GUILayout.Width(Screen.width * 0.48f), GUILayout.Height(Screen.height * 0.2f)))
                     MethodInvoker(debugMethod);
 
                 if (i % 2 != 0)
