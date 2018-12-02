@@ -9,17 +9,17 @@ public class Test : MonoBehaviour
     {
         gesture.OnGestureDone.AddListener(DebugConsole.Instance.Open);
 
-        DebugConsole.Instance.AddInstanceMethod("test", "print test", "This method will print method", this, () =>
+        DebugConsole.Instance.AddInstanceMethod("test1", "In-line method", "", this, () =>
         {
-            Debug.Log("test");
+            Debug.Log("In-line method");
         });
 
-        DebugConsole.Instance.AddInstanceMethod("hue", "print hue", "This method will print hue", this, hue);
+        DebugConsole.Instance.AddInstanceMethod("test2", "Declared Method", "", this, DeclaredMethod);
     }
 
-    public void hue()
+    public void DeclaredMethod()
     {
-        Debug.Log("hue");
+        Debug.Log("DeclaredMethod");
     }
 
     [DebugConsole("no param", "desc")]
