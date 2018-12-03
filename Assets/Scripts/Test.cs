@@ -52,6 +52,18 @@ public class Test : MonoBehaviour
         Debug.Log("BOOL TEST: " + value);
     }
 
+    [DebugConsole("lala test", "desc")]
+    public void lala(bool value)
+    {
+        Debug.Log("BOOL TEST: " + value);
+    }
+
+    [DebugConsole("lel test", "desc")]
+    public void lele(bool value)
+    {
+        Debug.Log("BOOL TEST: " + value);
+    }
+
     [DebugConsole("Multiple Values test", "desc")]
     public void Multiple(string stringValue, bool boolValue, float floatValue, int intValue)
     {

@@ -50,8 +50,7 @@ namespace DebugConsoleTool
         private bool mShowingConsole = false;
 
         //UI
-        private Vector2 mScrollPositionButtons;
-        private Vector2 mScrollPositionParameters;
+        private Vector2 mScrollPosition;
 
         //Method params
         private List<object> mUserParameters = new List<object>();
@@ -148,9 +147,11 @@ namespace DebugConsoleTool
         {
             if (!mShowingConsole) return;
             GUI.Box(new Rect(0, 0, Screen.width, Screen.height), "");
+            mScrollPosition = GUILayout.BeginScrollView(mScrollPosition, GUILayout.Width(Screen.width), GUILayout.Height(Screen.height));
             if (mCurrentMethod != null)
             {
                 DrawParameters();
+                GUILayout.EndScrollView();
                 return;
             }
 
@@ -158,11 +159,11 @@ namespace DebugConsoleTool
                 Close();
 
             DrawMethodButtons();
+            GUILayout.EndScrollView();
         }
 
         private void DrawMethodButtons()
         {
-            mScrollPositionButtons = GUILayout.BeginScrollView(mScrollPositionButtons, GUILayout.Width(Screen.width), GUILayout.Height(Screen.height));
             GUILayout.BeginVertical();
             bool needEnd = false;
             var i = 0;
@@ -191,12 +192,10 @@ namespace DebugConsoleTool
 
             if (needEnd) GUILayout.EndHorizontal();
             GUILayout.EndVertical();
-            GUILayout.EndScrollView();
         }
 
         private void DrawParameters()
         {
-            mScrollPositionParameters = GUILayout.BeginScrollView(mScrollPositionParameters, GUILayout.Width(Screen.width), GUILayout.Height(Screen.height));
             GUILayout.Box(mCurrentMethod.MethodDescription, GUILayout.Width(Screen.width));
 
             GUILayout.BeginVertical();
@@ -249,7 +248,6 @@ namespace DebugConsoleTool
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
-            GUILayout.EndScrollView();
         }
 
         private void MethodInvoker(DebugMethod debugMethod, object[] parameters = null)
